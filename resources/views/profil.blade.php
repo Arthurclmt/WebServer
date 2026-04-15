@@ -8,6 +8,7 @@
     @auth
         <p><strong>Pseudo :</strong> {{ Auth::user()->pseudo }}</p>
         <p><strong>Email :</strong> {{ Auth::user()->email }}</p>
+        <p><strong>Date de naissance :</strong> {{ Auth::user()->date_naissance }}</p>
         <p><strong>Genre :</strong> {{ Auth::user()->genre }}</p>
 
         <br>
@@ -16,7 +17,7 @@
 
         <br><br>
 
-        <form method="POST" action="/logout">
+        <form method="POST" action="{{route('logout')}}">
             @csrf
             <button type="submit">Se déconnecter</button>
         </form>

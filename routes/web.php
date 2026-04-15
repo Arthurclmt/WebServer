@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,3 +23,13 @@ Route::get('/profil', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
+
+
+Route::get('logout', function (){
+    Auth::logout(); // déconnecte l'utilisateur
+    return redirect('/login'); // redirige après déconnexion
+})->name('logout');
+Route::post('/logout', function () {
+    Auth::logout(); // déconnecte l'utilisateur
+    return redirect('/login'); // redirige après déconnexion
+})->name('logout');

@@ -58,16 +58,6 @@ class AuthController extends Controller
         //Création des variables de sessions lors de la connexion de l'utilisateur.
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-            $user = Auth::user();
-
-            //Stocker en session
-            session([
-                'pseudo' => $user->id,
-                'email' => $user->email,
-                'date_naissance' => $user->date_naissance,
-                'genre' => $user->genre,
-            ]);
-
             return redirect('/dashboard');
         } else {
             return back()->withErrors(['email' => 'Email ou mot de passe incorrect.']);
