@@ -13,6 +13,12 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
+Route::get('/profil', function () {
+    return view('profil');
+});
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 });

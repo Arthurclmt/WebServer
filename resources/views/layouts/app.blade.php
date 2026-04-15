@@ -12,6 +12,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Asso Gaming</a>
             <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="/profil">Profil</a>
                 <a class="nav-link text-white" href="/login">Connexion</a>
                 <a class="nav-link text-white" href="/register">Inscription</a>
             </div>
