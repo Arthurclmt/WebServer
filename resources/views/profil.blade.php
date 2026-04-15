@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-
+<!-- Les informations de l'user (Auth::user() sont déterminé à la connexion dans
+ AuthController.php)-->
     <h1>Mon Profil</h1>
 
     @auth
@@ -20,7 +21,7 @@
             <button type="submit">Se déconnecter</button>
         </form>
     @endauth
-
+<!--Si l'utilisateur est déconnecté on affiche une vue différente-->
     @guest
         <p>Vous n'êtes pas connecté.</p>
         <a href="/login">Se connecter</a>
