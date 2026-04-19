@@ -12,6 +12,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Asso Gaming</a>
             <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
                 @auth
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <form method="POST" action="/logout" class="d-flex align-items-center">
