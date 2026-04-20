@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -21,6 +22,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 Route::post('/logout', [AuthController::class, 'logout']);
+
