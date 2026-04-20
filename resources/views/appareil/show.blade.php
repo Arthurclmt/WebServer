@@ -79,3 +79,22 @@
     </div>
 </div>
 @endsection
+
+{{-- Fenêtre de Félicitations --}}
+@if(session('level_up'))
+    <div class="modal fade show" id="levelModal" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <h2 class="text-primary">✨ Bravo ! ✨</h2>
+                    <p>Tu passes au niveau :</p>
+                    <h3 class="fw-bold">{{ ucfirst(session('level_up')) }}</h3>
+                    
+                    <hr>
+                    
+                    <a href="{{ url()->current() }}" class="btn btn-success w-100">Continuer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
