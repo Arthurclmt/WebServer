@@ -17,6 +17,14 @@ class AppareilController extends Controller{
 
         $appareils = $query->get();
 
-        return view('rechercheAppareil', compact('appareils'));
+        return view('appareil.rechercheAppareil', compact('appareils'));
     }
+
+    public function show($id)
+{
+    // On récupère l'appareil ou on renvoie une erreur 404 s'il n'existe pas
+    $appareil = Appareil::findOrFail($id);
+
+    return view('appareil.show', compact('appareil'));
+}
 }
