@@ -15,14 +15,13 @@
                 <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
                 @auth
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
-                    <form method="POST" action="/logout" class="d-flex align-items-center">
-                        @csrf
-                        <button type="submit" class="btn btn-link nav-link text-white p-0">Déconnexion</button>
-                    </form>
-                @else
+                    <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
+                    <a class="nav-link text-white" href="/logout"> Déconnexion</a>
+                @endauth
+                @guest
                     <a class="nav-link text-white" href="/login">Connexion</a>
                     <a class="nav-link text-white" href="/register">Inscription</a>
-                @endauth
+                @endguest
             </div>
         </div>
     </nav>
