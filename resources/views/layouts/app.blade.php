@@ -19,7 +19,6 @@
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
                 @guest
-                    <a class="nav-link text-white" href="/profile">Profil</a>
                     <a class="nav-link text-white" href="/login">Connexion</a>
                     <a class="nav-link text-white" href="/register">Inscription</a>
                 @endguest
