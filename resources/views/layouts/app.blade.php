@@ -14,6 +14,7 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link text-white" href="/profil">Profil</a>
                 @auth 
+                    <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
                 @guest
