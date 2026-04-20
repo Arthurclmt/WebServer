@@ -12,12 +12,14 @@
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Asso Gaming</a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link text-white" href="/profil">Profil</a>
-                @auth 
+                <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
+                @auth
+                    <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
                 @guest
+                    <a class="nav-link text-white" href="/profile">Profil</a>
                     <a class="nav-link text-white" href="/login">Connexion</a>
                     <a class="nav-link text-white" href="/register">Inscription</a>
                 @endguest

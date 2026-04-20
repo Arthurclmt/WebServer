@@ -1,11 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AppareilController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
     return view('welcome');
 });
 
@@ -25,6 +29,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
+
 Route::get('/rechercheAppareil',  [AppareilController::class, 'index'])->middleware('auth');
 
 
@@ -37,3 +42,10 @@ Route::post('/logout', function () {
     Auth::logout(); // déconnecte l'utilisateur
     return redirect('/login'); // redirige après déconnexion
 })->name('logout');
+
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+Route::get('/profile', [AuthController::class, 'showProfile']);
+Route::post('/profile', [AuthController::class, 'updateProfile']);
+
+

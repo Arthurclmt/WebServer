@@ -26,10 +26,7 @@ class AuthController extends Controller
         ]);
 
         $allowed = AllowedMember::where('email', $request->email)->first();
-
-        if (!$allowed) {
-            return back()->withErrors(['email' => 'Cet email n\'est pas autorisé à s\'inscrire.']);
-        }
+        $role = $allowed ? 'admin' : 'simple';
 
         User::create([
             'pseudo'         => $request->pseudo,
@@ -37,6 +34,7 @@ class AuthController extends Controller
             'password'       => Hash::make($request->password),
             'date_naissance' => $request->date_naissance,
             'genre'          => $request->genre,
+            'role'           => $role,
         ]);
 
         return redirect('/login')->with('success', 'Inscription réussie ! Connecte-toi.');
@@ -64,5 +62,39 @@ class AuthController extends Controller
         }
     }
     
-    //
+    public function showProfile()
+    {
+        return view('profile', ['user' => Auth::user()]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'pseudo'         => 'required|unique:users,pseudo,' . $user->id . '|max:50',
+            'date_naissance' => 'nullable|date',
+            'genre'          => 'nullable',
+            'password'       => 'nullable|min:8',
+        ]);
+
+        $user->pseudo         = $request->pseudo;
+        $user->date_naissance = $request->date_naissance;
+        $user->genre          = $request->genre;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profil mis à jour.');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        return redirect('/');
+    }
 }
