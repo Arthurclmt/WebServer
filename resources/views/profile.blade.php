@@ -5,7 +5,12 @@
     <div class="col-md-6">
         <div class="card shadow-sm">
             <div class="card-body p-4">
-                <h2 class="mb-4">Réglages du profil</h2>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Réglages du profil</h2>
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.index') }}" class="btn btn-warning btn-sm">Panel Admin</a>
+                    @endif
+                </div>
 
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>

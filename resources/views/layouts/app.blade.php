@@ -16,6 +16,9 @@
                 @auth
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
+                    @if(Auth::user()->role === 'admin')
+                        <a class="nav-link text-warning fw-bold" href="{{ route('admin.index') }}">Admin</a>
+                    @endif
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
                 @guest
