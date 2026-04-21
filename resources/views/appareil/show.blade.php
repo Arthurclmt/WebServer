@@ -26,7 +26,7 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <strong>Statut :</strong> 
-                                @if($appareil->status == 'actif')
+                                @if($appareil->status == "actif")
                                     <span class="badge bg-success text-white">Actif / Connecté</span>
                                 @elseif($appareil->status == 'maintenance')
                                     <span class="badge bg-warning text-dark">En maintenance</span>
@@ -66,14 +66,31 @@
                 </div>
 
                 {{-- Actions (Optionnel) --}}
-                <div class="mt-4 d-flex gap-2">
-                    <a href="#" class="btn btn-primary">Modifier l'appareil</a>
-                    <form action="#" method="POST" onsubmit="return confirm('Supprimer cet appareil ?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger">Supprimer</button>
-                    </form>
-                </div>
+                {{-- Actions admin --}}
+                @if(auth()->check() && auth()->user()->role === "admin")
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">
+                            ✏ Modifier
+                        </a>
+ 
+                        {{-- Toggle statut --}}
+                        <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
+                            @csrf
+                            @if($appareil->status === "actif")
+                                <button type="submit" class="btn btn-warning">⏸ Désactiver</button>
+                            @else
+                                <button type="submit" class="btn btn-success">▶ Activer</button>
+                            @endif
+                        </form>
+ 
+                        <form action="{{ route('appareil.destroy', $appareil->id) }}" method="POST"
+                              onsubmit="return confirm('Supprimer définitivement cet appareil ?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger">🗑 Supprimer</button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
