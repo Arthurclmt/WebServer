@@ -16,7 +16,6 @@ Route::get('/', function () {
 
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
-
 Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -31,10 +30,18 @@ Route::get('/dashboard', function () {
 });
 
 
-Route::get('/rechercheAppareil', [AppareilController::class, 'index'])
-    ->middleware('auth')
-    ->name('appareils.index'); // On lui donne un petit nom
-Route::get('/appareil/{id}', [AppareilController::class, 'show'])->name('appareil.show');
+Route::middleware('auth')->group(function () {
+    Route::get('/rechercheAppareil',            [AppareilController::class, 'index'])        ->name('appareils.index');
+    Route::get('/appareil/create',              [AppareilController::class, 'create'])       ->name('appareil.create');
+    Route::post('/appareil',                    [AppareilController::class, 'store'])        ->name('appareil.store');
+    Route::get('/appareil/{id}',                [AppareilController::class, 'show'])         ->name('appareil.show');
+    Route::get('/appareil/{id}/edit',           [AppareilController::class, 'edit'])         ->name('appareil.edit');
+    Route::put('/appareil/{id}',                [AppareilController::class, 'update'])       ->name('appareil.update');
+    Route::delete('/appareil/{id}',             [AppareilController::class, 'destroy'])      ->name('appareil.destroy');
+    Route::post('/appareil/{id}/toggle-status', [AppareilController::class, 'toggleStatus'])->name('appareil.toggleStatus');
+});
+
+
 
 Route::get('logout', function (){
     Auth::logout(); // déconnecte l'utilisateur

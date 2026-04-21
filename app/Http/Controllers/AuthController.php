@@ -26,7 +26,7 @@ class AuthController extends Controller
         ]);
 
         $allowed = AllowedMember::where('email', $request->email)->first();
-        $role = $allowed ? 'admin' : 'simple';
+        $role = $allowed ? "admin" : 'simple';
 
         User::create([
             'pseudo'         => $request->pseudo,
