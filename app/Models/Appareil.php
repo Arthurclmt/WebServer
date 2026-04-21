@@ -8,6 +8,7 @@ class Appareil extends Model
 {
     protected $fillable = [
     'name', 
+    'id',
     'type', 
     'brand',
     'status', 
