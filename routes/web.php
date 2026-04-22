@@ -54,7 +54,15 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
+// Routes admin
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+});
+
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 

@@ -5,7 +5,13 @@
 @section('content')
 <div class="container">
     <h1 class="mb-4">Nos Événements</h1>
-
+    @auth
+        @if(auth()->user()->role === 'admin')
+            <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">
+                + Ajouter un événement
+            </a>
+        @endif
+    @endauth   
     @if($events->isEmpty())
         <div class="alert alert-info">Aucun événement à venir.</div>
     @else
