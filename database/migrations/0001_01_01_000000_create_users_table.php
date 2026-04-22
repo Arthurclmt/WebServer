@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('pseudo')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['simple', 'admin'])->default('simple');
+            $table->enum('role', ['simple', "admin"])->default('simple');
             $table->float('points')->default(0);
             $table->enum('level', ['debutant', 'intermediaire', 'avance', 'expert'])->default('debutant');
             $table->boolean('is_verified')->default(false);
