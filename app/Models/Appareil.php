@@ -12,8 +12,14 @@ class Appareil extends Model
     'type', 
     'brand',
     'status', 
-    'description'
+    'description',
+    'room_id'
     ];
 
     protected $table = 'devices';
+
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
+
 }

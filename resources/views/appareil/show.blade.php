@@ -8,7 +8,7 @@
                 {{-- En-tête avec bouton retour --}}
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="mb-0">{{ $appareil->name }}</h2>
-                    <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary btn-sm">
                         ← Retour à la liste
                     </a>
                 </div>

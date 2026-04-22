@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <div class="card shadow-sm">
                 <div class="card-body p-4">
                     
@@ -15,15 +15,15 @@
                     </div>
 
                     {{-- Formulaire Recherche + Filtres --}}
-                    <form method="GET" action="{{ route('appareils.index') }}" class="mb-4">
+                    <form method="GET" action="{{ route('appareil.index') }}" class="mb-4">
                         <div class="row g-2">
                             {{-- Barre de recherche --}}
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <input type="text" name="search" class="form-control"
                                        placeholder="Nom, type, marque…"
                                        value="{{ request('search') }}">
                             </div>
- 
+                            
                             {{-- Filtre statut --}}
                             <div class="col-md-2">
                                 <select name="status" class="form-select">
@@ -53,11 +53,24 @@
                                     @endforeach
                                 </select>
                             </div>
- 
+
+                            {{-- Filtre salle --}}
+                            <div class="col-md-2">
+                                <select name="room" class="form-select">
+                                    <option value="">Toutes les salles</option>
+                                    @foreach($rooms as $r)
+                                        <option value="{{ $r->id }}" 
+                                            {{ request('room') == $r->id ? 'selected' : '' }}>
+                                            {{ $r->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
                             {{-- Boutons --}}
                             <div class="col-md-2 d-flex gap-2">
                                 <button class="btn btn-outline-primary flex-grow-1" type="submit">Filtrer</button>
-                                <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary">✕</a>
+                                <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary">✕</a>
                             </div>
                         </div>
                     </form>
@@ -74,6 +87,7 @@
                                         <th>Nom</th>
                                         <th>Type</th>
                                         <th>Marque</th>
+                                        <th>Salle</th>
                                         <th>Statut</th>
                                         <th class="text-end">Actions</th>
                                     </tr>
@@ -91,6 +105,9 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-light text-dark border">{{ $appareil->brand }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border">{{ optional($appareil->room)->name ?? 'Aucune salle' }}</span>
                                             </td>
                                             <td>
                                                 @if($appareil->status == "actif")
@@ -127,6 +144,10 @@
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
                                                         </form>
+
+                                                    @elseif(auth()->check() && auth()->user()->role === "simple")
+
+
                                                     @endif
                                                 </div>
                                             </td>

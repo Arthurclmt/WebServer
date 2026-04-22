@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AppareilController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\DeviceConfigController;
+
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -31,7 +34,7 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/rechercheAppareil',            [AppareilController::class, 'index'])        ->name('appareils.index');
+    Route::get('/rechercheAppareil',            [AppareilController::class, 'index'])        ->name('appareil.index');
     Route::get('/appareil/create',              [AppareilController::class, 'create'])       ->name('appareil.create');
     Route::post('/appareil',                    [AppareilController::class, 'store'])        ->name('appareil.store');
     Route::get('/appareil/{id}',                [AppareilController::class, 'show'])         ->name('appareil.show');
@@ -58,3 +61,6 @@ Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.sho
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 
+Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
+Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('rooms.destroy');
