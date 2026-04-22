@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AppareilController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -54,7 +55,15 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+});
+
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 
