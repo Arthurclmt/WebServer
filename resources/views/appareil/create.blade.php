@@ -33,9 +33,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Pièce / Zone</label>
+                        <label class="form-label">Salle</label>
                         <select name="room_id" class="form-select">
-                            <option value="">— Aucune pièce —</option>
+                            <option value=""> Aucune Salle </option>
                             @foreach($rooms as $room)
                                 <option value="{{ $room->id }}"
                                     {{ old('room_id', $appareil->room_id ?? '') == $room->id ? 'selected' : '' }}>
