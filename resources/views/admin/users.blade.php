@@ -24,7 +24,7 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->pseudo }}</td>
                             <td>{{ $user->email }}</td>
-                            <td><span>tkt y'aura le score là</span></td>
+                            <td><span>{{ $user->points }}</span></td>
                             <td>
                                 @if($user->role === 'admin')
                                     <span class="badge bg-danger">Admin</span>
