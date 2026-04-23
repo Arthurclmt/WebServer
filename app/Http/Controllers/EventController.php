@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\News;
 
 class EventController extends Controller{
     public function index(){
@@ -31,11 +32,11 @@ class EventController extends Controller{
             abort(403);
         }
         $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'required|string',
-            'content'     => 'nullable|string',
-            'event_date'  => 'required|date',
-            'image'       => 'nullable|image|max:2048',
+        'title'       => 'required|string|max:255',
+        'description' => 'required|string',
+        'content'     => 'nullable|string',
+        'event_date'  => 'required|date',
+        'image'       => 'nullable|image|max:2048',
         ]);
         // Générer le slug
         $data['slug'] = Str::slug($request->title);
@@ -43,6 +44,13 @@ class EventController extends Controller{
             $data['image'] = $request->file('image')->store('events', 'public');
         }
         Event::create($data);
+        News::create([
+        'title' => $event->title,
+        'content' => $event->description,
+        'image' => $event->image,
+        'type' => 'event',
+        'event_id' => $event->id,
+        ]);
         return redirect()->route('events.index')->with('success', 'Événement créé !');
     }
 }
