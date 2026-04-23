@@ -37,7 +37,7 @@
                         <select name="room_id" class="form-select">
                             <option value=""> Aucune Salle </option>
                             @foreach($rooms as $room)
-                                <option value="{{ $room->id }}"
+                                <option value="{{ $room->id }}" 
                                     {{ old('room_id', $appareil->room_id ?? '') == $room->id ? 'selected' : '' }}>
                                     {{ $room->name }}
                                 </option>

@@ -68,7 +68,7 @@ class AppareilController extends Controller{
 
     public function show($id){
         // On récupère l'appareil ou on renvoie une erreur 404 s'il n'existe pas
-        $appareil = Appareil::findOrFail($id);
+        $appareil = Appareil::with('room')->findOrFail($id);
         $rooms = Room::all();
         $user = auth()->user();
 
@@ -184,6 +184,44 @@ class AppareilController extends Controller{
         $appareil->save();
         return back()->with('success', '« ' . $appareil->name . ' » est maintenant ' . $appareil->status . '.');
     }
+
+    public function requestDelete($id){
+        $appareil = Appareil::findOrFail($id);
+        $userId   = auth()->id();
+        $voters   = $appareil->delete_requested_by ?? [];
+
+        if (in_array($userId, $voters)) {
+            return back()->with('info', 'Vous avez déjà soumis une demande de suppression pour cet appareil.');
+        }
+
+        $voters[] = $userId;
+        $appareil->delete_requested_by    = $voters;
+        $appareil->delete_request_number  = count($voters);
+        $appareil->save();
+
+        return back()->with('success', 'Demande de suppression envoyée à un administrateur.');
+    }
+
+    public function editConfig($id){
+        $this->adminOnly();
+        $appareil = Appareil::findOrFail($id);
+        return view('appareil.config', compact('appareil'));
+    }
+
+    public function updateConfig(Request $request, $id){
+        $this->adminOnly();
+        $appareil = Appareil::findOrFail($id);
+        $data = $request->validate([
+            'start_hour'  => 'nullable|date_format:H:i',
+            'end_hour'    => 'nullable|date_format:H:i|after:start_hour',
+            'usage_time'  => 'nullable|integer|min:1|max:1440',
+            'consumption' => 'nullable|integer|min:0|max:99999',
+        ]);
+        $appareil->update($data);
+        return redirect()->route('appareil.show', $appareil->id)
+                        ->with('success', 'Configuration mise à jour.');
+    }
+
 
     private function adminOnly(){
         if(!auth()->check() || auth()->user()->role !== "admin") {

@@ -64,3 +64,9 @@ Route::post('/profile', [AuthController::class, 'updateProfile']);
 Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
 Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
 Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+
+
+Route::post('/appareil/{id}/request-delete', [AppareilController::class, 'requestDelete'])->name('appareil.requestDelete');
+
+Route::get('/appareil/{id}/config', [AppareilController::class, 'editConfig'])->name('appareil.editConfig');
+Route::put('/appareil/{id}/config', [AppareilController::class, 'updateConfig'])->name('appareil.updateConfig');
