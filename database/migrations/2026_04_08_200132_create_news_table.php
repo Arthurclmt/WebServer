@@ -6,17 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
+    public function up(){
         Schema::create('news', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
+        $table->id();
+        $table->string('title');
+        $table->text('content');
+        $table->string('image')->nullable();
+        $table->enum('type', ['news', 'event'])->default('news');
+        $table->unsignedBigInteger('event_id')->nullable(); // lien vers event si type=event
+        $table->timestamps();
         });
     }
 

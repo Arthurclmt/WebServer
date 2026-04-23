@@ -15,7 +15,7 @@
                 @auth
                     @if(auth()->user()->role === 'admin')
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.users') }}">Gestion Users</a>
+                            <a class="nav-link text-white" href="{{ route('admin.users') }}">Gestion Users</a>
                         </li>
                     @endif
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
@@ -23,6 +23,7 @@
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
                 <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
+                <a class="nav-link text-white" href="{{ route('news.index') }}">News</a>
                 @guest
                     <a class="nav-link text-white" href="/login">Connexion</a>
                     <a class="nav-link text-white" href="/register">Inscription</a>
