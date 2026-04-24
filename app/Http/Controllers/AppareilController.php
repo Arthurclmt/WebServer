@@ -10,16 +10,20 @@ use Illuminate\Support\Facades\Storage;
 
 
 class AppareilController extends Controller{
+    
     public function index(Request $request)
     {
-        $query = Appareil::query();
+        $query = Appareil::with('room');
  
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('name',  'like', "%$s%")
                   ->orWhere('type',  'like', "%$s%")
-                  ->orWhere('brand', 'like', "%$s%");
+                  ->orWhere('brand', 'like', "%$s%")
+                  ->orWhereHas('room', function ($q2) use ($s) {
+                      $q2->where('name','like',"%$s%");
+                    });
             });
         }
  
@@ -34,19 +38,39 @@ class AppareilController extends Controller{
         if ($request->filled('brand')) {
             $query->where('brand', $request->brand);
         }
- 
+
+        if ($request->filled('room')){
+            $query->where('room_id', $request->room);
+        }
+
         $appareils = $query->orderBy('name')->get();
  
         $types  = Appareil::whereNotNull('type')->distinct()->pluck('type')->sort()->values();
         $brands = Appareil::whereNotNull('brand')->distinct()->pluck('brand')->sort()->values();
- 
-        return view('appareil.rechercheAppareil', compact('appareils', 'types', 'brands'));
+        $rooms = Room::orderBy('name')->get();
+
+
+        return view('appareil.rechercheAppareil', compact('appareils', 'types', 'brands','rooms'));
     }
+
+    public function rechercheAppareil(Request $request){
+        $search = $request->input('search');
+
+        $appareils = Appareil::with('room') // ✅ ICI
+            ->where('name', 'like', '%' . $search . '%')
+            ->orWhereHas('room', function ($query) use ($search) { // ✅ ICI
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->get();
+
+        return view('appareils.index', compact('appareils'));
+    }
+
 
     public function show($id){
         // On récupère l'appareil ou on renvoie une erreur 404 s'il n'existe pas
-        $appareil = Appareil::findOrFail($id);
-
+        $appareil = Appareil::with('room')->findOrFail($id);
+        $rooms = Room::all();
         $user = auth()->user();
 
         $oldLevel = $user->level; // On stocke l'ancien niveau
@@ -93,16 +117,18 @@ class AppareilController extends Controller{
             }
         }
 
-        return view('appareil.show', compact('appareil'));
+        return view('appareil.show', compact('appareil','rooms'));
     }
 
     public function create(){
-        //$this->adminOnly();
-        return view('appareil.create');
+        $this->adminOnly();
+        $rooms = Room::all();
+        return view('appareil.create',compact('rooms'));
     }
 
     public function store(Request $request){
-        //$this->adminOnly();
+        $this->adminOnly();
+        $rooms = Room::all();
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'type'        => 'nullable|string|max:100',
@@ -122,13 +148,14 @@ class AppareilController extends Controller{
     }
 
     public function edit($id){
-        //$this->adminOnly();
+        $this->adminOnly();
+        $rooms = Room::all();
         $appareil = Appareil::findOrFail($id);
-        return view('appareil.edit', compact('appareil'));
+        return view('appareil.edit', compact('appareil','rooms'));
     }
 
     public function update(Request $request, $id){
-        //$this->adminOnly();
+        $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
         $data = $request->validate([
             'name'        => 'required|string|max:255',
@@ -152,11 +179,11 @@ class AppareilController extends Controller{
 
         public function destroy($id)
     {
-        //$this->adminOnly();
+        $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
         $name = $appareil->name;
         $appareil->delete();
-        return redirect()->route('appareils.index')
+        return redirect()->route('appareil.index')
                          ->with('success', 'Appareil « ' . $name . ' » supprimé.');
     }
  
@@ -170,9 +197,74 @@ class AppareilController extends Controller{
         return back()->with('success', '« ' . $appareil->name . ' » est maintenant ' . $appareil->status . '.');
     }
 
+    public function requestDelete($id){
+        $appareil = Appareil::findOrFail($id);
+        $userId   = auth()->id();
+        $voters   = $appareil->delete_requested_by ?? [];
+
+        if (in_array($userId, $voters)) {
+            return back()->with('info', 'Vous avez déjà soumis une demande de suppression pour cet appareil.');
+        }
+
+        $voters[] = $userId;
+        $appareil->delete_requested_by    = $voters;
+        $appareil->delete_request_number  = count($voters);
+        $appareil->save();
+
+        return back()->with('success', 'Demande de suppression envoyée à un administrateur.');
+    }
+
+    public function editConfig($id){
+        $this->adminOnly();
+        $appareil = Appareil::findOrFail($id);
+        return view('appareil.config', compact('appareil'));
+    }
+
+    public function updateConfig(Request $request, $id){
+        $this->adminOnly();
+        $appareil = Appareil::findOrFail($id);
+        $data = $request->validate([
+            'start_hour'  => 'nullable|date_format:H:i',
+            'end_hour'    => 'nullable|date_format:H:i|after:start_hour',
+            'usage_time'  => 'nullable|integer|min:1|max:1440',
+            'consumption' => 'nullable|integer|min:0|max:99999',
+        ]);
+        $appareil->update($data);
+        return redirect()->route('appareil.show', $appareil->id)
+                        ->with('success', 'Configuration mise à jour.');
+    }
+
+    public function exportCSV($id)
+{
+    $appareil = Appareil::findOrFail($id);
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $appareil->name . '.csv"',
+    ];
+
+    $callback = function() use ($appareil) {
+        $file = fopen('php://output', 'w');
+        
+        fputcsv($file, ['ID', 'Nom', 'Type', 'Marque', 'Statut', 'Description']);
+        fputcsv($file, [
+            $appareil->id,
+            $appareil->name,
+            $appareil->type,
+            $appareil->brand,
+            $appareil->status,
+            $appareil->description,
+        ]);
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
     private function adminOnly(){
         if(!auth()->check() || auth()->user()->role !== "admin") {
-            abord(403, 'Action reservée aux administrateurs.');
+            abort(403, 'Action reservée aux administrateurs.');
         }
     }
 }

@@ -8,7 +8,7 @@
                 {{-- En-tête avec bouton retour --}}
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="mb-0">{{ $appareil->name }}</h2>
-                    <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary btn-sm">
                         ← Retour à la liste
                     </a>
                 </div>
@@ -78,7 +78,6 @@
                     </div>
                 </div>
 
-                {{-- Actions (Optionnel) --}}
                 {{-- Paramètres de configuration --}}
                 @if($appareil->start_hour || $appareil->end_hour || $appareil->usage_time || $appareil->consumption)
                 <div class="mt-4">
@@ -146,12 +145,11 @@
 
                 {{-- Actions admin --}}
                 @if(auth()->check() && auth()->user()->role === "admin")
-                    <div class="mt-4 d-flex gap-2 flex-wrap">
-                        <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">
-                            ✏ Modifier
-                        </a>
- 
-                        {{-- Toggle statut --}}
+                    <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
+                        <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">✏️ Modifier</a>
+                        <a href="{{ route('appareil.editConfig', $appareil->id) }}" class="btn btn-outline-info">⚙️ Configuration</a>
+                        <a href="{{ route('appareil.export', $appareil->id) }}" class="btn btn-success btn-sm">✉️ Exporter CSV</a>
+
                         <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
                             @csrf
                             @if($appareil->status === "actif")
@@ -160,20 +158,50 @@
                                 <button type="submit" class="btn btn-success">▶ Activer</button>
                             @endif
                         </form>
- 
+
                         <form action="{{ route('appareil.destroy', $appareil->id) }}" method="POST"
-                              onsubmit="return confirm('Supprimer définitivement cet appareil ?')">
+                            onsubmit="return confirm('Supprimer définitivement cet appareil ?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger">🗑 Supprimer</button>
+                            <button type="submit" class="btn btn-outline-danger">🗑️ Supprimer</button>
                         </form>
+
+                        {{-- Indicateur demandes de suppression --}}
+                        @if($appareil->delete_request_number > 0)
+                            <span class="badge bg-danger fs-6 ms-2">
+                                🗑️ {{ $appareil->delete_request_number }} demande(s) de suppression
+                            </span>
+                        @endif
                     </div>
                 @endif
+
+                {{-- Actions utilisateurs simples --}}
+                @if(auth()->check() && auth()->user()->role !== "admin")
+                    <div class="mt-4 border-top pt-3">
+                        @if(in_array(auth()->id(), $appareil->delete_requested_by ?? []))
+                            <p class="text-muted small mb-0">⏳ Vous avez déjà demandé la suppression de cet appareil.</p>
+                        @else
+                            <form action="{{ route('appareil.requestDelete', $appareil->id) }}" method="POST"
+                                onsubmit="return confirm('Signaler cet appareil pour suppression ?')">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    🗑️ Demander la suppression
+                                </button>
+                            </form>
+                        @endif
+                        @if(session('info'))
+                            <div class="alert alert-info mt-2">{{ session('info') }}</div>
+                        @endif
+                        @if(session('success'))
+                            <div class="alert alert-success mt-2">{{ session('success') }}</div>
+                        @endif
+                    </div>
+                @endif
+                @endsection
             </div>
         </div>
     </div>
 </div>
-@endsection
 
 {{-- Fenêtre de Félicitations --}}
 @if(session('level_up'))
