@@ -20,6 +20,9 @@
                     </span>
                     <h6 class="card-title">{{ $item->title }}</h6>
                     <p class="card-text small text-muted">{{ Str::limit($item->content, 80) }}</p>
+                    @if($item->type === 'event' && $item->event_id)
+                        <a href="{{ route('events.show', $item->event->slug) }}" class="btn btn-sm btn-outline-warning">Voir l'événement</a>
+                    @endif
                 </div>
             </div>
         </div>
