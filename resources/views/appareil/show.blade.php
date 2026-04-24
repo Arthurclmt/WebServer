@@ -135,6 +135,7 @@
                     <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
                         <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">✏️ Modifier</a>
                         <a href="{{ route('appareil.editConfig', $appareil->id) }}" class="btn btn-outline-info">⚙️ Configuration</a>
+                        <a href="{{ route('appareil.export', $appareil->id) }}" class="btn btn-success btn-sm">✉️ Exporter CSV</a>
 
                         <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
                             @csrf

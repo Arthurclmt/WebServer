@@ -81,3 +81,4 @@ Route::post('/appareil/{id}/request-delete', [AppareilController::class, 'reques
 
 Route::get('/appareil/{id}/config', [AppareilController::class, 'editConfig'])->name('appareil.editConfig');
 Route::put('/appareil/{id}/config', [AppareilController::class, 'updateConfig'])->name('appareil.updateConfig');
+Route::get('/appareils/{id}/export', [AppareilController::class, 'exportCSV'])->name('appareil.export');

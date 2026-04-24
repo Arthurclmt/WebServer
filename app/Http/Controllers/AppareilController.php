@@ -222,6 +222,33 @@ class AppareilController extends Controller{
                         ->with('success', 'Configuration mise à jour.');
     }
 
+    public function exportCSV($id)
+{
+    $appareil = Appareil::findOrFail($id);
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $appareil->name . '.csv"',
+    ];
+
+    $callback = function() use ($appareil) {
+        $file = fopen('php://output', 'w');
+        
+        fputcsv($file, ['ID', 'Nom', 'Type', 'Marque', 'Statut', 'Description']);
+        fputcsv($file, [
+            $appareil->id,
+            $appareil->name,
+            $appareil->type,
+            $appareil->brand,
+            $appareil->status,
+            $appareil->description,
+        ]);
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
 
     private function adminOnly(){
         if(!auth()->check() || auth()->user()->role !== "admin") {
