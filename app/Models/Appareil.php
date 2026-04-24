@@ -12,8 +12,23 @@ class Appareil extends Model
     'type', 
     'brand',
     'status', 
-    'description'
+    'description',
+    'room_id',
+    'start_hour',
+    'end_hour',
+    'usage_time',
+    'consumption',
+    'delete_request_number',
+    'delete_requested_by'
     ];
 
+    protected $casts = [
+        'delete_requested_by' => 'array',
+    ];
     protected $table = 'devices';
+
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
+
 }

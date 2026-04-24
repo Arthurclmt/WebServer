@@ -20,6 +20,17 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('room_id')->nullable()->constrained('rooms')->nullOnDelete();
             $table->foreignId('added_by')->nullable()->constrained('users')->nullOnDelete();
+
+            // Configuration d'utilisation
+            $table->time('start_hour')->nullable();
+            $table->time('end_hour')->nullable();
+            $table->unsignedSmallInteger('usage_time')->nullable();    // en minutes
+            $table->unsignedSmallInteger('consumption')->nullable();   // en watts
+
+            // Demandes de suppression
+            $table->unsignedTinyInteger('delete_request_number')->default(0);
+            $table->json('delete_requested_by')->nullable();
+
             $table->timestamps();
         });
     }

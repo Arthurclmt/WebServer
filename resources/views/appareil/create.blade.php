@@ -9,7 +9,7 @@
  
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="mb-0">Ajouter un appareil</h2>
-                    <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary btn-sm">← Retour</a>
+                    <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary btn-sm">← Retour</a>
                 </div>
  
                 @if($errors->any())
@@ -30,6 +30,19 @@
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                value="{{ old('name') }}" required>
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Salle</label>
+                        <select name="room_id" class="form-select">
+                            <option value=""> Aucune Salle </option>
+                            @foreach($rooms as $room)
+                                <option value="{{ $room->id }}" 
+                                    {{ old('room_id', $appareil->room_id ?? '') == $room->id ? 'selected' : '' }}>
+                                    {{ $room->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
  
                     <div class="row">
@@ -63,7 +76,7 @@
  
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Créer l'appareil</button>
-                        <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary">Annuler</a>
+                        <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary">Annuler</a>
                     </div>
                 </form>
  
