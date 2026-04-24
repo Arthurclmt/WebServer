@@ -10,18 +10,18 @@ class EventSeeder extends Seeder{
     public function run(): void{
         $events = [
         [
-            'title'       => 'LANFRANK',
-            'slug'        => 'LANFRANK',
-            'description' => 'Une lan douteuse mon reuf',
+            'title'       => 'EVENT1',
+            'slug'        => 'event1',
+            'description' => 'super event',
             'content'     => '',
             'event_date'  => '2026-06-15',
         ],
         [
-            'title'       => 'CitySkyLAN',
-            'slug'        => 'Kaboum',
+            'title'       => 'EVENT2',
+            'slug'        => 'event2',
             'description' => 'Une belle date pour un beau event',
             'content'     => '',
-            'event_date'  => '2026-09-11',
+            'event_date'  => '2026-09-12',
         ],
     ];
 

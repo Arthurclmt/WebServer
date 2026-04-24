@@ -11,9 +11,28 @@
                 + Ajouter un événement
             </a>
         @endif
-    @endauth   
+    @endauth
+    <form method="GET" action="{{ route('events.index') }}" class="mb-4">
+        <div class="input-group">
+            <input type="text" 
+                name="search" 
+                class="form-control" 
+                placeholder="Rechercher un événement..."
+                value="{{ $search ?? '' }}">
+            <button class="btn btn-primary" type="submit">🔍 Rechercher</button>
+            @if($search)
+                <a href="{{ route('events.index') }}" class="btn btn-outline-secondary">✕ Effacer</a>
+            @endif
+        </div>
+    </form>
     @if($events->isEmpty())
-        <div class="alert alert-info">Aucun événement à venir.</div>
+        <div class="alert alert-info">
+            @if($search)
+                Aucun événement trouvé pour "{{ $search }}".
+            @else
+                Aucun événement à venir.
+            @endif
+        </div>
     @else
         <div class="row row-cols-1 row-cols-md-3 g-4">
             @foreach($events as $event)

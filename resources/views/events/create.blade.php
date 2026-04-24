@@ -39,5 +39,10 @@
         <button type="submit" class="btn btn-success">Créer l'événement</button>
         <a href="{{ route('events.index') }}" class="btn btn-secondary">Annuler</a>
     </form>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            {{ $errors->first() }}
+        </div>
+    @endif
 </div>
 @endsection

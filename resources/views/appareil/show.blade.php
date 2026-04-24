@@ -12,10 +12,9 @@
                         ← Retour à la liste
                     </a>
                 </div>
-
                 <div class="row">
                     {{-- Informations principales --}}
-                    <div class="col-md-6">
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
                         <p class="text-muted mb-1">Informations techniques</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
@@ -38,7 +37,7 @@
                     </div>
 
                     {{-- Localisation et gestion --}}
-                    <div class="col-md-6">
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
                         <p class="text-muted mb-1">Localisation & Gestion</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
@@ -54,6 +53,20 @@
                                 <span>{{ $appareil->created_at->format('d/m/Y') }}</span>
                             </li>
                         </ul>
+                    </div>
+
+                    {{-- Image --}}
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        @if($appareil->image)
+                            <img src="{{ asset('storage/' . $appareil->image) }}" 
+                                alt="{{ $appareil->name }}"
+                                class="img-fluid rounded shadow-sm"
+                                style="max-height: 200px; object-fit: contain;">
+                        @else
+                            <div class="text-muted text-center">
+                                <i>Aucune image</i>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

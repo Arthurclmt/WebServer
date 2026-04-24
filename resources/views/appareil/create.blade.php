@@ -22,7 +22,7 @@
                     </div>
                 @endif
  
-                <form action="{{ route('appareil.store') }}" method="POST">
+                <form action="{{ route('appareil.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
  
                     <div class="mb-3">
@@ -73,7 +73,10 @@
                         <textarea name="description" class="form-control" rows="4"
                                   placeholder="Informations supplémentaires…">{{ old('description') }}</textarea>
                     </div>
- 
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                    </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Créer l'appareil</button>
                         <a href="{{ route('appareil.index') }}" class="btn btn-outline-secondary">Annuler</a>

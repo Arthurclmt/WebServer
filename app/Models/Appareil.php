@@ -11,6 +11,7 @@ class Appareil extends Model
     'id',
     'type', 
     'brand',
+    'image',
     'status', 
     'description',
     'room_id',

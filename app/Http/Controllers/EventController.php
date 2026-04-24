@@ -8,9 +8,17 @@ use Illuminate\Support\Str;
 use App\Models\News;
 
 class EventController extends Controller{
-    public function index(){
-        $events = Event::orderBy('event_date', 'asc')->get();
-        return view('events.index', compact('events'));
+    public function index(Request $request){
+        $search = $request->input('search');
+
+        $events = Event::orderBy('event_date', 'asc')
+            ->when($search, function($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            })
+            ->get();
+
+        return view('events.index', compact('events', 'search'));
     }
 
     // Page des evénement en eux même
@@ -32,25 +40,29 @@ class EventController extends Controller{
             abort(403);
         }
         $data = $request->validate([
-        'title'       => 'required|string|max:255',
-        'description' => 'required|string',
-        'content'     => 'nullable|string',
-        'event_date'  => 'required|date',
-        'image'       => 'nullable|image|max:2048',
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'content'     => 'nullable|string',
+            'event_date'  => 'required|date',
+            'image'       => 'nullable|image|max:2048',
         ]);
-        // Générer le slug
-        $data['slug'] = Str::slug($request->title);
+        $data['slug'] = Str::slug($request->title) . '-' . time();
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('events', 'public');
         }
-        Event::create($data);
-        News::create([
-        'title' => $event->title,
-        'content' => $event->description,
-        'image' => $event->image,
-        'type' => 'event',
-        'event_id' => $event->id,
-        ]);
-        return redirect()->route('events.index')->with('success', 'Événement créé !');
+        try {
+            $event = Event::create($data);
+            News::create([
+                'title'    => $event->title,
+                'content'  => $event->description,
+                'image'    => $event->image,
+                'type'     => 'event',
+                'event_id' => $event->id,
+                'slug'     => $data['slug'], // ← ajoute ça si news a un slug
+            ]);
+            return redirect()->route('events.index')->with('success', 'Événement créé !');
+        } catch (\Exception $e) {
+            return back()->withErrors(['title' => 'Un événement avec ce titre existe déjà.'])->withInput();
+        }
     }
 }
