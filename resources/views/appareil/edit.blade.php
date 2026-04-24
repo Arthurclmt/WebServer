@@ -22,7 +22,7 @@
                     </div>
                 @endif
  
-                <form action="{{ route('appareil.update', $appareil->id) }}" method="POST">
+                <form action="{{ route('appareil.update', $appareil->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
  
@@ -60,7 +60,19 @@
                         <label class="form-label fw-bold">Description</label>
                         <textarea name="description" class="form-control" rows="4">{{ old('description', $appareil->description) }}</textarea>
                     </div>
- 
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        @if($appareil->image)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $appareil->image) }}" 
+                                    alt="Image actuelle" 
+                                    class="img-thumbnail" 
+                                    style="max-height: 150px;">
+                                <p class="text-muted small">Image actuelle (laisser vide pour la conserver)</p>
+                            </div>
+                        @endif
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                    </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                         <a href="{{ route('appareil.show', $appareil->id) }}" class="btn btn-outline-secondary">Annuler</a>

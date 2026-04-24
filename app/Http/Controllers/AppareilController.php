@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appareil;
 use App\Models\UserLog;
+use App\Models\Room;
+use Illuminate\Support\Facades\Storage;
 
 
 class AppareilController extends Controller{
@@ -107,11 +109,16 @@ class AppareilController extends Controller{
             'brand'       => 'nullable|string|max:100',
             'status'      => 'required|in:actif,inactif,maintenance',
             'description' => 'nullable|string',
+            'room_id'     => 'nullable|exists:rooms,id',
+            'image'       => 'nullable|image|max:2048',
         ]);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('appareils', 'public');
+        }
         $data['added_by'] = auth()->id();
         $appareil = Appareil::create($data);
         return redirect()->route('appareil.show',$appareil->id)
-                         ->with('success','Appareil "'. $appareil->name . '" crée avec succès');
+             ->with('success','Appareil "'. $appareil->name . '" crée avec succès');
     }
 
     public function edit($id){
@@ -129,7 +136,15 @@ class AppareilController extends Controller{
             'brand'       => 'nullable|string|max:100',
             'status'      => 'required|in:actif,inactif,maintenance',
             'description' => 'nullable|string',
+            'room_id'     => 'nullable|exists:rooms,id',
+            'image'       => 'nullable|image|max:2048',
         ]);
+        if ($request->hasFile('image')) {
+        if ($appareil->image) {
+            \Storage::disk('public')->delete($appareil->image);
+        }
+        $data['image'] = $request->file('image')->store('appareils', 'public');
+        }
         $appareil->update($data);
         return redirect()->route('appareil.show', $appareil->id)
                          ->with('success', 'Appareil mis à jour avec succès.');

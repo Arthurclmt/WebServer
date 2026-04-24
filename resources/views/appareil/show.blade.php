@@ -12,10 +12,9 @@
                         ← Retour à la liste
                     </a>
                 </div>
-
                 <div class="row">
                     {{-- Informations principales --}}
-                    <div class="col-md-6">
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
                         <p class="text-muted mb-1">Informations techniques</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
@@ -38,7 +37,7 @@
                     </div>
 
                     {{-- Localisation et gestion --}}
-                    <div class="col-md-6">
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
                         <p class="text-muted mb-1">Localisation & Gestion</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
@@ -55,6 +54,20 @@
                             </li>
                         </ul>
                     </div>
+
+                    {{-- Image --}}
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        @if($appareil->image)
+                            <img src="{{ asset('storage/' . $appareil->image) }}" 
+                                alt="{{ $appareil->name }}"
+                                class="img-fluid rounded shadow-sm"
+                                style="max-height: 200px; object-fit: contain;">
+                        @else
+                            <div class="text-muted text-center">
+                                <i>Aucune image</i>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Description --}}
@@ -66,6 +79,71 @@
                 </div>
 
                 {{-- Actions (Optionnel) --}}
+                {{-- Paramètres de configuration --}}
+                @if($appareil->start_hour || $appareil->end_hour || $appareil->usage_time || $appareil->consumption)
+                <div class="mt-4">
+                    <h5>⚙️ Paramètres d'utilisation</h5>
+                    <div class="row g-2">
+                        @if($appareil->start_hour || $appareil->end_hour)
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                                <span>🕐 <strong>Plage horaire</strong></span>
+                                <span class="text-primary fw-semibold">
+                                    {{ $appareil->start_hour ? \Carbon\Carbon::parse($appareil->start_hour)->format('H:i') : '—' }}
+                                    →
+                                    {{ $appareil->end_hour ? \Carbon\Carbon::parse($appareil->end_hour)->format('H:i') : '—' }}
+                                </span>
+                            </div>
+                        </div>
+                        @endif
+                        @if($appareil->usage_time)
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded border text-center">
+                                <div class="text-muted small">Temps max</div>
+                                <div class="fw-bold">{{ intdiv($appareil->usage_time, 60) > 0 ? intdiv($appareil->usage_time, 60).'h' : '' }}{{ $appareil->usage_time % 60 > 0 ? $appareil->usage_time % 60 .'min' : '' }}</div>
+                            </div>
+                        </div>
+                        @endif
+                        @if($appareil->consumption)
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded border text-center">
+                                <div class="text-muted small">Consommation</div>
+                                <div class="fw-bold">{{ $appareil->consumption }} W</div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
+                {{-- Paramètres de configuration --}}
+                @if($appareil->start_hour || $appareil->end_hour || $appareil->usage_time || $appareil->consumption)
+                <div class="mt-4">
+                    <h5>⚙️ Paramètres d'utilisation</h5>
+                    <ul class="list-group list-group-flush">
+                        @if($appareil->start_hour || $appareil->end_hour)
+                        <li class="list-group-item d-flex justify-content-between">
+                            <strong>Plage horaire :</strong>
+                            <span>{{ $appareil->start_hour ? \Carbon\Carbon::parse($appareil->start_hour)->format('H:i') : '—' }}
+                            → {{ $appareil->end_hour ? \Carbon\Carbon::parse($appareil->end_hour)->format('H:i') : '—' }}</span>
+                        </li>
+                        @endif
+                        @if($appareil->usage_time)
+                        <li class="list-group-item d-flex justify-content-between">
+                            <strong>Temps max :</strong>
+                            <span>{{ intdiv($appareil->usage_time, 60) > 0 ? intdiv($appareil->usage_time, 60).'h ' : '' }}{{ $appareil->usage_time % 60 > 0 ? $appareil->usage_time % 60 .'min' : '' }}</span>
+                        </li>
+                        @endif
+                        @if($appareil->consumption)
+                        <li class="list-group-item d-flex justify-content-between">
+                            <strong>Consommation :</strong>
+                            <span>{{ $appareil->consumption }} W</span>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
+                @endif
+
                 {{-- Actions admin --}}
                 @if(auth()->check() && auth()->user()->role === "admin")
                     <div class="mt-4 d-flex gap-2 flex-wrap">

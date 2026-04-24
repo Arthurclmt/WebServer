@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('type')->nullable();
             $table->string('brand')->nullable();
+            $table->string('image')->nullable();
             $table->enum('status', ['actif', 'inactif', 'maintenance'])->default("actif");
             $table->text('description')->nullable();
             $table->foreignId('room_id')->nullable()->constrained('rooms')->nullOnDelete();

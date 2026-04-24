@@ -8,9 +8,17 @@ use Illuminate\Support\Str;
 use App\Models\News;
 
 class EventController extends Controller{
-    public function index(){
-        $events = Event::orderBy('event_date', 'asc')->get();
-        return view('events.index', compact('events'));
+    public function index(Request $request){
+        $search = $request->input('search');
+
+        $events = Event::orderBy('event_date', 'asc')
+            ->when($search, function($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            })
+            ->get();
+
+        return view('events.index', compact('events', 'search'));
     }
 
     // Page des evénement en eux même
