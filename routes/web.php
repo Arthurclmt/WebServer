@@ -9,6 +9,9 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\DeviceConfigController;
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -28,9 +31,7 @@ Route::get('/profil', function () {
 });
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {
@@ -57,7 +58,17 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+    Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+});
+
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 
