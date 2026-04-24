@@ -7,6 +7,8 @@ use App\Models\AllowedMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InscriptionMail;
 
 class AuthController extends Controller
 {
@@ -26,9 +28,16 @@ class AuthController extends Controller
         ]);
 
         $allowed = AllowedMember::where('email', $request->email)->first();
-        $role = $allowed ? 'admin' : 'simple';
+        
+        if (!$allowed) {
+        return back()->withErrors([
+            'email' => 'Cet email n’est pas autorisé à s’inscrire.'
+        ]);
+}
 
-        User::create([
+        $role = $allowed ? "admin" : 'simple';
+
+        $user = User::create([
             'pseudo'         => $request->pseudo,
             'email'          => $request->email,
             'password'       => Hash::make($request->password),
@@ -36,6 +45,8 @@ class AuthController extends Controller
             'genre'          => $request->genre,
             'role'           => $role,
         ]);
+        
+        Mail::to($user->email)->send(new InscriptionMail($user));
 
         return redirect('/login')->with('success', 'Inscription réussie ! Connecte-toi.');
     }
