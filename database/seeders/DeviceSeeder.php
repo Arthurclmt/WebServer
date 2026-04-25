@@ -14,14 +14,16 @@ class DeviceSeeder extends Seeder{
             'id'        => 1,
             'type' => 'Switch',
             'brand'     => 'Nintendo',
-            'description' => 'Switch avec les DLCs MK8 et SmashBros.'
+            'description' => 'Switch avec les DLCs MK8 et SmashBros.',
+            'image'       => 'appareils/switch.jpeg' 
         ],
         [
             'name'       => 'Switch2',
             'id'        => 2,
             'type' => 'Switch2',
             'brand'     => 'Nintendo',
-            'description' => 'Switch 2 avec des jeux exclusifs tels que Mario Kart World.'
+            'description' => 'Switch 2 avec des jeux exclusifs tels que Mario Kart World.',
+            'image'       => 'appareils/switch2.jpeg' 
         ],
     ];
 
