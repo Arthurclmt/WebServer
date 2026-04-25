@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\AllowedMember;
+use Illuminate\Support\Facades\DB;
 
 class AllowedMemberSeeder extends Seeder{
     public function run(): void{
