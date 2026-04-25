@@ -41,7 +41,7 @@
             <p class="lead">{{ $event->description }}</p>
 
             @if($event->content)
-                <div class="mt-3">
+                <div class="mt-3 text-white">
                     {!! nl2br(e($event->content)) !!}
                 </div>
             @endif
