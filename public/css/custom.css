@@ -1,0 +1,71 @@
+body {
+    background: radial-gradient(ellipse at top, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+.card {
+    --bs-card-bg: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    color: white !important;
+}
+
+.card-body {
+    background: transparent !important;
+}
+
+.list-group-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-label {
+    color: white;
+}
+
+.table {
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.table td, .table th {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: transparent !important;
+}
+
+p, span, label, td, th, li, a {
+    color: white;
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.text-dark {
+    color: white !important;
+}
+
+.badge.bg-light {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.table tbody tr td {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
