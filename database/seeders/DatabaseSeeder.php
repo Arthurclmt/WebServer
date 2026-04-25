@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             DeviceSeeder::class,
             EventSeeder::class,
             RoomSeeder::class,
+            AllowedMemberSeeder::class,
         ]);
     }
 }
