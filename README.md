@@ -65,19 +65,6 @@ DB_USERNAME=root
 DB_PASSWORD=Asso@2026
 ```
 
-### Créer la base de données MySQL
-
-```bash
-sudo mysql --defaults-file=/etc/mysql/debian.cnf
-```
-
-```sql
-CREATE DATABASE asso_gaming;
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Asso@2026';
-FLUSH PRIVILEGES;
-exit
-```
-
 ### Lancer les migrations et les seeders
 
 ```bash
@@ -154,26 +141,6 @@ asso-gaming/
 - Gestion des utilisateurs
 - Gestion de la whitelist
 - Supervision globale de la plateforme
-
----
-
-## 🔄 Workflow Git
-
-```bash
-# Récupérer les dernières modifications
-git pull origin main
-
-# Travailler sur sa branche
-git checkout <ta-branche>
-git merge main
-
-# Envoyer son travail
-git add .
-git commit -m "description"
-git push -u origin <ta-branche>
-```
-
-Puis créer une **Pull Request** sur GitHub pour merger dans `main`.
 
 ---
 
