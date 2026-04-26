@@ -10,6 +10,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\DeviceConfigController;
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MembresController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\DashboardController;
 
@@ -33,6 +34,9 @@ Route::get('/profil', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+
+Route::get('/membres', [MembresController::class, 'index'])->middleware('auth')->name('membres.index');
+Route::get('/membres/{user}', [MembresController::class, 'show'])->middleware('auth')->name('membres.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/rechercheAppareil',            [AppareilController::class, 'index'])        ->name('appareil.index');
