@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asso Gaming</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    
 </head>
-<body class="bg-light">
+<body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Asso Gaming</a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
                 @auth
+                    @if(auth()->user()->role === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('admin.users') }}">Gestion Users</a>
+                        </li>
+                    @endif
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
                     @if(Auth::user()->role === 'admin')
@@ -21,6 +27,8 @@
                     @endif
                     <a class="nav-link text-white" href="/logout"> Déconnexion</a>
                 @endauth
+                <a class="nav-link text-white" href="{{ route('events.index') }}">Nos events</a>
+                <a class="nav-link text-white" href="{{ route('news.index') }}">News</a>
                 @guest
                     <a class="nav-link text-white" href="/login">Connexion</a>
                     <a class="nav-link text-white" href="/register">Inscription</a>

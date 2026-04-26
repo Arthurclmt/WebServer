@@ -8,15 +8,14 @@
                 {{-- En-tête avec bouton retour --}}
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="mb-0">{{ $appareil->name }}</h2>
-                    <a href="{{ route('appareils.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ route('appareil.index') }}" class="btn btn-outline-light btn-sm">
                         ← Retour à la liste
                     </a>
                 </div>
-
                 <div class="row">
                     {{-- Informations principales --}}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Informations techniques</p>
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
+                        <p class="text-white-50 mb-1">Informations techniques</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
                                 <strong>Type :</strong> <span>{{ $appareil->type ?? 'N/A' }}</span>
@@ -38,8 +37,8 @@
                     </div>
 
                     {{-- Localisation et gestion --}}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Localisation & Gestion</p>
+                    <div class="{{ $appareil->image ? 'col-md-4' : 'col-md-6' }}">
+                        <p class="text-white-50 mb-1">Localisation & Gestion</p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
                                 <strong>Salle :</strong> 
@@ -55,25 +54,74 @@
                             </li>
                         </ul>
                     </div>
+
+                    {{-- Image --}}
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        @if($appareil->image)
+                            <img src="{{ asset('storage/' . $appareil->image) }}" 
+                                alt="{{ $appareil->name }}"
+                                class="img-fluid rounded shadow-sm"
+                                style="max-height: 200px; object-fit: contain;">
+                        @else
+                            <div class="text-white-50 text-center">
+                                <i>Aucune image</i>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Description --}}
                 <div class="mt-4">
                     <h5>Description</h5>
-                    <div class="p-3 bg-light rounded border">
+                    <div class="p-3 rounded border" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1) !important; color: white;">
                         {{ $appareil->description ?: 'Aucune description disponible pour cet appareil.' }}
                     </div>
                 </div>
 
-                {{-- Actions (Optionnel) --}}
+                {{-- Paramètres de configuration --}}
+                @if($appareil->start_hour || $appareil->end_hour || $appareil->usage_time || $appareil->consumption)
+                <div class="mt-4">
+                    <h5>⚙️ Paramètres d'utilisation</h5>
+                    <div class="row g-2">
+                        @if($appareil->start_hour || $appareil->end_hour)
+                        <div class="col-md-6">
+                            <div class="p-3 rounded border d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1) !important;">
+                                <span>🕐 <strong>Plage horaire</strong></span>
+                                <span class="text-primary fw-semibold">
+                                    {{ $appareil->start_hour ? \Carbon\Carbon::parse($appareil->start_hour)->format('H:i') : '—' }}
+                                    →
+                                    {{ $appareil->end_hour ? \Carbon\Carbon::parse($appareil->end_hour)->format('H:i') : '—' }}
+                                </span>
+                            </div>
+                        </div>
+                        @endif
+                        @if($appareil->usage_time)
+                        <div class="col-md-3">
+                            <div class="p-3 rounded border text-center" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1) !important;">
+                                <div class="text-white-50 small">Temps max</div>
+                                <div class="fw-bold">{{ intdiv($appareil->usage_time, 60) > 0 ? intdiv($appareil->usage_time, 60).'h' : '' }}{{ $appareil->usage_time % 60 > 0 ? $appareil->usage_time % 60 .'min' : '' }}</div>
+                            </div>
+                        </div>
+                        @endif
+                        @if($appareil->consumption)
+                        <div class="col-md-3">
+                            <div class="p-3 rounded border text-center" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1) !important;">
+                                <div class="text-white-50 small">Consommation</div>
+                                <div class="fw-bold">{{ $appareil->consumption }} W</div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
                 {{-- Actions admin --}}
                 @if(auth()->check() && auth()->user()->role === "admin")
-                    <div class="mt-4 d-flex gap-2 flex-wrap">
-                        <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">
-                            ✏ Modifier
-                        </a>
- 
-                        {{-- Toggle statut --}}
+                    <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
+                        <a href="{{ route('appareil.edit', $appareil->id) }}" class="btn btn-primary">✏️ Modifier</a>
+                        <a href="{{ route('appareil.editConfig', $appareil->id) }}" class="btn btn-outline-info">⚙️ Configuration</a>
+                        <a href="{{ route('appareil.export', $appareil->id) }}" class="btn btn-success btn-sm">✉️ Exporter CSV</a>
+
                         <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
                             @csrf
                             @if($appareil->status === "actif")
@@ -82,13 +130,42 @@
                                 <button type="submit" class="btn btn-success">▶ Activer</button>
                             @endif
                         </form>
- 
+
                         <form action="{{ route('appareil.destroy', $appareil->id) }}" method="POST"
-                              onsubmit="return confirm('Supprimer définitivement cet appareil ?')">
+                            onsubmit="return confirm('Supprimer définitivement cet appareil ?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger">🗑 Supprimer</button>
+                            <button type="submit" class="btn btn-outline-danger">🗑️ Supprimer</button>
                         </form>
+
+                        @if($appareil->delete_request_number > 0)
+                            <span class="badge bg-danger fs-6 ms-2">
+                                🗑️ {{ $appareil->delete_request_number }} demande(s) de suppression
+                            </span>
+                        @endif
+                    </div>
+                @endif
+
+                {{-- Actions utilisateurs simples --}}
+                @if(auth()->check() && auth()->user()->role !== "admin")
+                    <div class="mt-4 border-top pt-3">
+                        @if(in_array(auth()->id(), $appareil->delete_requested_by ?? []))
+                            <p class="text-white-50 small mb-0">⏳ Vous avez déjà demandé la suppression de cet appareil.</p>
+                        @else
+                            <form action="{{ route('appareil.requestDelete', $appareil->id) }}" method="POST"
+                                onsubmit="return confirm('Signaler cet appareil pour suppression ?')">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    🗑️ Demander la suppression
+                                </button>
+                            </form>
+                        @endif
+                        @if(session('info'))
+                            <div class="alert alert-info mt-2">{{ session('info') }}</div>
+                        @endif
+                        @if(session('success'))
+                            <div class="alert alert-success mt-2">{{ session('success') }}</div>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -101,14 +178,12 @@
 @if(session('level_up'))
     <div class="modal fade show" id="levelModal" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white;">
                 <div class="modal-body text-center p-4">
                     <h2 class="text-primary">✨ Bravo ! ✨</h2>
                     <p>Tu passes au niveau :</p>
                     <h3 class="fw-bold">{{ ucfirst(session('level_up')) }}</h3>
-                    
-                    <hr>
-                    
+                    <hr style="border-color: rgba(255,255,255,0.2);">
                     <a href="{{ url()->current() }}" class="btn btn-success w-100">Continuer</a>
                 </div>
             </div>

@@ -42,4 +42,14 @@ class AdminController extends Controller
         $user->update(['is_banned' => false]);
         return back()->with('success', "{$user->pseudo} a été débanni.");
     }
+  
+    public function users()
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $users = User::all();
+        return view('admin.users', ['users' => $users]);
+    }
 }
