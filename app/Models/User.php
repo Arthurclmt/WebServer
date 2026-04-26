@@ -17,6 +17,7 @@ class User extends Authenticatable
         'date_naissance',
         'genre',
         'role',
+        'is_banned',
     ];
 
     protected $hidden = [

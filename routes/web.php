@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AppareilController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\DeviceConfigController;
 
@@ -71,6 +72,14 @@ Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.sho
 
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
+
+Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/users/{user}/promote', [AdminController::class, 'promote'])->name('admin.promote');
+    Route::post('/users/{user}/demote', [AdminController::class, 'demote'])->name('admin.demote');
+    Route::post('/users/{user}/ban', [AdminController::class, 'ban'])->name('admin.ban');
+    Route::post('/users/{user}/unban', [AdminController::class, 'unban'])->name('admin.unban');
+});
 
 Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
 Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
