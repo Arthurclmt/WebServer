@@ -44,13 +44,37 @@ class AppareilController extends Controller{
         }
 
         $appareils = $query->orderBy('name')->get();
- 
+
         $types  = Appareil::whereNotNull('type')->distinct()->pluck('type')->sort()->values();
         $brands = Appareil::whereNotNull('brand')->distinct()->pluck('brand')->sort()->values();
         $rooms = Room::orderBy('name')->get();
 
+        $parConsommation = Appareil::whereNotNull('consumption')
+            ->whereNotNull('usage_time')
+            ->get()
+            ->map(function ($a) {
+                $a->wh_jour    = round($a->consumption * $a->usage_time / 60, 2);
+                $a->wh_semaine = round($a->wh_jour * 7, 2);
+                return $a;
+            })
+            ->sortByDesc('wh_jour')
+            ->values();
 
-        return view('appareil.rechercheAppareil', compact('appareils', 'types', 'brands','rooms'));
+        $tousLesAppareils = Appareil::with('room')->get()->map(function ($a) {
+            $a->wh_jour = ($a->consumption && $a->usage_time)
+                ? round($a->consumption * $a->usage_time / 60, 2)
+                : null;
+            return $a;
+        });
+
+        $inefficaces = $tousLesAppareils->filter(function ($a) {
+            return $a->status === 'maintenance'
+                || $a->status === 'inactif'
+                || $a->delete_request_number >= 2
+                || ($a->wh_jour !== null && $a->wh_jour > 500);
+        })->values();
+
+        return view('appareil.rechercheAppareil', compact('appareils', 'types', 'brands', 'rooms', 'parConsommation', 'inefficaces'));
     }
 
     public function rechercheAppareil(Request $request){
