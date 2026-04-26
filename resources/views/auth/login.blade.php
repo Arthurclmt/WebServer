@@ -29,7 +29,7 @@
                     <button type="submit" class="btn btn-primary w-100">Se connecter</button>
                 </form>
 
-                <p class="mt-3 text-center">Pas encore de compte ? <a href="/register">S'inscrire</a></p>
+                <p class="mt-3 text-center">Pas encore de compte ? <a href="/register">S'inscrire'</a></p>
             </div>
         </div>
     </div>
