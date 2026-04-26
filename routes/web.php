@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/statistiques', [App\Http\Controllers\StatsController::class, 'index'])->name('stats.index');
     Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
     Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 });

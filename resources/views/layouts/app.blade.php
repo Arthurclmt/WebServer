@@ -19,6 +19,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('admin.users') }}">Gestion Users</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('stats.index') }}">Statistiques</a>
+                         </li>
                     @endif
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
