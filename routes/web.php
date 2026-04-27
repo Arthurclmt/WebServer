@@ -14,7 +14,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MembresController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MembresController;
 
 Route::get('/', function () {
     if (Auth::check()) {
