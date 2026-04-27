@@ -25,6 +25,7 @@
                     @endif
                     <a class="nav-link text-white fw-bold" href="/profile">{{ Auth::user()->pseudo }}</a>
                     <a class="nav-link text-white" href="/rechercheAppareil">Appareils</a>
+                    <a class="nav-link text-white" href="{{ route('membres.index') }}">Membres</a>
                     @if(Auth::user()->role === 'admin')
                         <a class="nav-link text-warning fw-bold" href="{{ route('admin.index') }}">Admin</a>
                     @endif

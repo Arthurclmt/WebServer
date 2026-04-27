@@ -183,5 +183,100 @@
             </div>
         </div>
     </div>
+
+    {{-- Surveillance et optimisation --}}
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-11">
+
+            {{-- Consommation --}}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-bold">Rapport de consommation énergétique</div>
+                <div class="card-body p-0">
+                    @if($parConsommation->isEmpty())
+                        <p class="text-muted p-3 mb-0">Aucun appareil avec des données de consommation.</p>
+                    @else
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Appareil</th>
+                                    <th>Puissance (W)</th>
+                                    <th>Utilisation/jour (min)</th>
+                                    <th>Conso/jour (Wh)</th>
+                                    <th>Conso/semaine (Wh)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($parConsommation as $a)
+                                <tr>
+                                    <td><a href="{{ route('appareil.show', $a->id) }}" class="text-decoration-none fw-bold">{{ $a->name }}</a></td>
+                                    <td>{{ $a->consumption }} W</td>
+                                    <td>{{ $a->usage_time }} min</td>
+                                    <td>{{ $a->wh_jour }} Wh</td>
+                                    <td>{{ $a->wh_semaine }} Wh</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Inefficaces --}}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-bold">Appareils nécessitant attention</div>
+                <div class="card-body p-0">
+                    @if($inefficaces->isEmpty())
+                        <p class="text-muted p-3 mb-0">Aucun appareil en maintenance ou signalé.</p>
+                    @else
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Appareil</th>
+                                    <th>Statut</th>
+                                    <th>Raison</th>
+                                    <th>Demandes de suppression</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($inefficaces as $a)
+                                <tr>
+                                    <td><a href="{{ route('appareil.show', $a->id) }}" class="text-decoration-none fw-bold">{{ $a->name }}</a></td>
+                                    <td>
+                                        @if($a->status === 'maintenance')
+                                            <span class="badge bg-warning text-dark">Maintenance</span>
+                                        @elseif($a->status === 'inactif')
+                                            <span class="badge bg-secondary">Inactif</span>
+                                        @else
+                                            <span class="badge bg-success">Actif</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($a->status === 'maintenance')
+                                            <span class="text-warning">⚠ En maintenance</span>
+                                        @elseif($a->status === 'inactif')
+                                            <span class="text-secondary">⏸ Appareil inactif</span>
+                                        @elseif($a->wh_jour !== null && $a->wh_jour > 500)
+                                            <span class="text-danger">⚡ Consommation élevée ({{ $a->wh_jour }} Wh/jour)</span>
+                                        @elseif($a->delete_request_number >= 2)
+                                            <span class="text-danger">🗑 Signalé par plusieurs utilisateurs</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($a->delete_request_number > 0)
+                                            <span class="badge bg-danger">{{ $a->delete_request_number }} demande(s)</span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 @endsection
