@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MembresController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MembresController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -61,6 +62,9 @@ Route::post('/logout', function () {
     Auth::logout(); // déconnecte l'utilisateur
     return redirect('/login'); // redirige après déconnexion
 })->name('logout');
+
+Route::get('/membres', [MembresController::class, 'index'])->middleware('auth')->name('membres.index');
+Route::get('/membres/{user}', [MembresController::class, 'show'])->middleware('auth')->name('membres.show');
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
