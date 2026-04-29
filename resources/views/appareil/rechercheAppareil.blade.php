@@ -123,7 +123,7 @@
                                                     <a href="{{ route('appareil.show', $appareil->id) }}"
                                                        class="btn btn-sm btn-light border">Voir</a>
  
-                                                    @if(auth()->check() && auth()->user()->role === "admin")
+                                                    @if(auth()->check() && (auth()->user()->role === "admin" || auth()->user()->points >= 50))
                                                         {{-- Toggle actif/inactif --}}
                                                         <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
                                                             @csrf

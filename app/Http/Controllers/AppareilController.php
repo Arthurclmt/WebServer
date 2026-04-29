@@ -214,7 +214,7 @@ class AppareilController extends Controller{
 
     public function toggleStatus($id)
     {
-        $this->adminOnly();
+        
         $appareil = Appareil::findOrFail($id);
         $appareil->status = ($appareil->status === "actif") ? "inactif" : "actif";
         $appareil->save();
@@ -239,13 +239,13 @@ class AppareilController extends Controller{
     }
 
     public function editConfig($id){
-        $this->adminOnly();
+        
         $appareil = Appareil::findOrFail($id);
         return view('appareil.config', compact('appareil'));
     }
 
     public function updateConfig(Request $request, $id){
-        $this->adminOnly();
+        
         $appareil = Appareil::findOrFail($id);
         $data = $request->validate([
             'start_hour'  => 'nullable|date_format:H:i',
