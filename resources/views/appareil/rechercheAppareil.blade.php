@@ -122,7 +122,8 @@
                                                 <div class="d-flex justify-content-end gap-1">
                                                     <a href="{{ route('appareil.show', $appareil->id) }}"
                                                        class="btn btn-sm btn-light border">Voir</a>
- 
+
+
                                                     @if(auth()->check() && (auth()->user()->role === "admin" || auth()->user()->points >= 50))
                                                         {{-- Toggle actif/inactif --}}
                                                         <form action="{{ route('appareil.toggleStatus', $appareil->id) }}" method="POST">
@@ -133,13 +134,14 @@
                                                                 {{ $appareil->status === "actif" ? '⏸' : '▶' }}
                                                             </button>
                                                         </form>
- 
+                                                        @if(auth()->user()->role === "admin")
                                                         <a href="{{ route('appareil.edit', $appareil->id) }}"
                                                            class="btn btn-sm btn-outline-primary">✏</a>
-
+                                                        @endif
                                                         <a href="{{ route('appareil.editConfig', $appareil->id) }}"
                                                                 class="btn btn-sm btn-outline-primary">⚙️</a>
 
+                                                        @if(auth()->user()->role === "admin")
                                                         <form action="{{ route('appareil.destroy', $appareil->id) }}"
                                                               method="POST"
                                                               onsubmit="return confirm('Supprimer « {{ $appareil->name }} » ?')">
@@ -147,6 +149,17 @@
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
                                                         </form>
+                                                        @elseif(auth()->user()->points >= 50 && auth()->user()->role === "simple")
+                                                            @if(in_array(auth()->id(), $appareil->delete_requested_by ?? []))
+                                                            <span class="btn btn-sm btn-outline-primary">⏳</span>
+                                                            @else
+                                                                <form action="{{ route('appareil.requestDelete', $appareil->id) }}" method="POST"
+                                                                    onsubmit="return confirm('Demander la suppression de « {{ $appareil->name }} » ?')">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm">🗑️</button>
+                                                                </form>
+                                                            @endif
+                                                        @endif
                                                         {{-- Cellule indicateur demandes de suppression --}}
                                                         <td class="text-center">
                                                             @if($appareil->delete_request_number > 0)
@@ -157,10 +170,10 @@
                                                                 <span class="text-muted">—</span>
                                                             @endif
                                                         </td>
-
-                                                    @elseif(auth()->check() && auth()->user()->role === "simple")
+                                                    @endif
+                                                    @if(auth()->check() && auth()->user()->role === "simple" && auth()->user()->points < 50)
                                                         @if(in_array(auth()->id(), $appareil->delete_requested_by ?? []))
-                                                            <span class="text-muted small">⏳ Demandé</span>
+                                                            <span class="btn btn-sm btn-outline-primary">⏳</span>
                                                         @else
                                                             <form action="{{ route('appareil.requestDelete', $appareil->id) }}" method="POST"
                                                                 onsubmit="return confirm('Demander la suppression de « {{ $appareil->name }} » ?')">
