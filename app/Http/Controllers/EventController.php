@@ -27,6 +27,7 @@ class EventController extends Controller{
         return view('events.show', compact('event'));
     }
 
+    //Crée un évènement
     public function create(){
     // Vérifier que c'est un admin
         if (auth()->user()->role !== 'admin') {
@@ -35,6 +36,7 @@ class EventController extends Controller{
         return view('events.create');
     }
 
+    //Stocke un évènement dans la base de donnée
     public function store(Request $request){
         if (auth()->user()->role !== 'admin') {
             abort(403);
