@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AppareilController extends Controller{
     
+    //Fonction de recherche des appareils (avec filtres)
     public function index(Request $request)
     {
         $query = Appareil::with('room');
@@ -77,6 +78,7 @@ class AppareilController extends Controller{
         return view('appareil.rechercheAppareil', compact('appareils', 'types', 'brands', 'rooms', 'parConsommation', 'inefficaces'));
     }
 
+    //Barre de recherche des appareils
     public function rechercheAppareil(Request $request){
         $search = $request->input('search');
 
@@ -90,7 +92,7 @@ class AppareilController extends Controller{
         return view('appareils.index', compact('appareils'));
     }
 
-
+    //Fonction pour montrer la page d'un des appareils
     public function show($id){
         // On récupère l'appareil ou on renvoie une erreur 404 s'il n'existe pas
         $appareil = Appareil::with('room')->findOrFail($id);
@@ -144,12 +146,14 @@ class AppareilController extends Controller{
         return view('appareil.show', compact('appareil','rooms'));
     }
 
+    //Fonction pour créer un appareil 
     public function create(){
         $this->adminOnly();
         $rooms = Room::all();
         return view('appareil.create',compact('rooms'));
     }
 
+    //Fonction pour le stocker dans la base de donnée
     public function store(Request $request){
         $this->adminOnly();
         $rooms = Room::all();
@@ -171,6 +175,7 @@ class AppareilController extends Controller{
              ->with('success','Appareil "'. $appareil->name . '" crée avec succès');
     }
 
+    //Fonction pour éditer les informations d'un appareil
     public function edit($id){
         $this->adminOnly();
         $rooms = Room::all();
@@ -178,6 +183,7 @@ class AppareilController extends Controller{
         return view('appareil.edit', compact('appareil','rooms'));
     }
 
+    //Fonction pour mettre à jour dans la base de donnée
     public function update(Request $request, $id){
         $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
@@ -201,7 +207,8 @@ class AppareilController extends Controller{
                          ->with('success', 'Appareil mis à jour avec succès.');
     }
 
-        public function destroy($id)
+    //Fonction pour supprimer un appareil
+    public function destroy($id)
     {
         $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
@@ -211,7 +218,7 @@ class AppareilController extends Controller{
                          ->with('success', 'Appareil « ' . $name . ' » supprimé.');
     }
  
-
+    //Fonction pour le voyant connecté/déconnecté
     public function toggleStatus($id)
     {
         $this->adminOnly();
@@ -221,6 +228,7 @@ class AppareilController extends Controller{
         return back()->with('success', '« ' . $appareil->name . ' » est maintenant ' . $appareil->status . '.');
     }
 
+    //Fonction pour les demandes de suppression (une par utilisateur)
     public function requestDelete($id){
         $appareil = Appareil::findOrFail($id);
         $userId   = auth()->id();
@@ -238,12 +246,15 @@ class AppareilController extends Controller{
         return back()->with('success', 'Demande de suppression envoyée à un administrateur.');
     }
 
+    //Fonction pour éditer la configuration
     public function editConfig($id){
         $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
         return view('appareil.config', compact('appareil'));
     }
 
+
+    //Fonction pour mettre à jour la configuration dans la base de donnée
     public function updateConfig(Request $request, $id){
         $this->adminOnly();
         $appareil = Appareil::findOrFail($id);
@@ -258,6 +269,7 @@ class AppareilController extends Controller{
                         ->with('success', 'Configuration mise à jour.');
     }
 
+    //Fonction pour exporter en csv
     public function exportCSV($id)
 {
     $appareil = Appareil::findOrFail($id);
@@ -285,7 +297,7 @@ class AppareilController extends Controller{
 
     return response()->stream($callback, 200, $headers);
 }
-
+    //Fonction pour vérifier que la personne est un admin
     private function adminOnly(){
         if(!auth()->check() || auth()->user()->role !== "admin") {
             abort(403, 'Action reservée aux administrateurs.');

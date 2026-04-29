@@ -9,12 +9,12 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\DeviceConfigController;
-
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MembresController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\DashboardController;
 
+//Page d'accueil
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect('/dashboard');
@@ -22,23 +22,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Routes connexion et inscription
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 
 
+//Route profil
 Route::get('/profil', function () {
     return view('profil');
 });
 
-
+//Route dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
-Route::get('/membres', [MembresController::class, 'index'])->middleware('auth')->name('membres.index');
-Route::get('/membres/{user}', [MembresController::class, 'show'])->middleware('auth')->name('membres.show');
-
+//Routes appareils
 Route::middleware('auth')->group(function () {
     Route::get('/rechercheAppareil',            [AppareilController::class, 'index'])        ->name('appareil.index');
     Route::get('/appareil/create',              [AppareilController::class, 'create'])       ->name('appareil.create');
@@ -48,10 +48,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/appareil/{id}',                [AppareilController::class, 'update'])       ->name('appareil.update');
     Route::delete('/appareil/{id}',             [AppareilController::class, 'destroy'])      ->name('appareil.destroy');
     Route::post('/appareil/{id}/toggle-status', [AppareilController::class, 'toggleStatus'])->name('appareil.toggleStatus');
+    Route::post('/appareil/{id}/request-delete', [AppareilController::class, 'requestDelete'])->name('appareil.requestDelete');
+    Route::get('/appareil/{id}/config', [AppareilController::class, 'editConfig'])->name('appareil.editConfig');
+    Route::put('/appareil/{id}/config', [AppareilController::class, 'updateConfig'])->name('appareil.updateConfig');
+    Route::get('/appareils/{id}/export', [AppareilController::class, 'exportCSV'])->name('appareil.export');
 });
 
 
-
+//Déconnexion
 Route::get('logout', function (){
     Auth::logout(); // déconnecte l'utilisateur
     return redirect('/login'); // redirige après déconnexion
@@ -62,11 +66,15 @@ Route::post('/logout', function () {
     return redirect('/login'); // redirige après déconnexion
 })->name('logout');
 
+//Routes membres
 Route::get('/membres', [MembresController::class, 'index'])->middleware('auth')->name('membres.index');
 Route::get('/membres/{user}', [MembresController::class, 'show'])->middleware('auth')->name('membres.show');
 
+//Routes news et events
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+
+//Routes utilisateur authentifié events/admin/news
 Route::middleware(['auth'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -78,11 +86,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 });
 
+//Routes events
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 
+//Routes profils
 Route::get('/profile', [AuthController::class, 'showProfile']);
 Route::post('/profile', [AuthController::class, 'updateProfile']);
 
+//Routes admin
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     Route::post('/users/{user}/promote', [AdminController::class, 'promote'])->name('admin.promote');
@@ -91,13 +102,10 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(func
     Route::post('/users/{user}/unban', [AdminController::class, 'unban'])->name('admin.unban');
 });
 
+//Routes salles
 Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
 Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
 Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('rooms.destroy');
 
 
-Route::post('/appareil/{id}/request-delete', [AppareilController::class, 'requestDelete'])->name('appareil.requestDelete');
 
-Route::get('/appareil/{id}/config', [AppareilController::class, 'editConfig'])->name('appareil.editConfig');
-Route::put('/appareil/{id}/config', [AppareilController::class, 'updateConfig'])->name('appareil.updateConfig');
-Route::get('/appareils/{id}/export', [AppareilController::class, 'exportCSV'])->name('appareil.export');

@@ -12,11 +12,12 @@ use App\Mail\InscriptionMail;
 
 class AuthController extends Controller
 {
+        //fonction pour montrer la page d'inscription
         public function showRegister()
     {
         return view('auth.register');
     }
-        
+        //Fonction pour s'inscrire et stocker le nouveau compte dans la base de donnée
         public function register(Request $request)
     {
         $request->validate([
@@ -50,12 +51,13 @@ class AuthController extends Controller
 
         return redirect('/login')->with('success', 'Inscription réussie ! Connecte-toi.');
     }
-
+        //Affiche la page de connexion
         public function showLogin()
     {
         return view('auth.login');
     }
 
+        //Fonction pour vérifier la connexion
         public function login(Request $request)
     {
         $request->validate([
@@ -73,11 +75,13 @@ class AuthController extends Controller
         }
     }
     
+    //Fonction qui retourne vers la page profil de l'utilisateur
     public function showProfile()
     {
         return view('profile', ['user' => Auth::user()]);
     }
 
+    //Fonction pour mettre à jour le profil de l'utilisateur dans la base de donnée
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -102,6 +106,7 @@ class AuthController extends Controller
         return back()->with('success', 'Profil mis à jour.');
     }
 
+    //Fonction pour se déconnecter
     public function logout(Request $request)
     {
         Auth::logout();
