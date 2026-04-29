@@ -15,6 +15,7 @@ class EventSeeder extends Seeder{
             'description' => 'super event',
             'content'     => '',
             'event_date'  => '2026-06-15',
+            'image'       => 'events/event1.jpg'
         ],
         [
             'title'       => 'EVENT2',
@@ -22,6 +23,7 @@ class EventSeeder extends Seeder{
             'description' => 'Une belle date pour un beau event',
             'content'     => '',
             'event_date'  => '2026-09-12',
+            'image'       => 'events/event2.jpeg'
         ],
     ];
 
