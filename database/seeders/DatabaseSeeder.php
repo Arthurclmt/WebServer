@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             RoomSeeder::class,
             AllowedMemberSeeder::class,
+            NewsSeeder::class,
         ]);
     }
 }

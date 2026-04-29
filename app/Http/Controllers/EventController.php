@@ -60,7 +60,6 @@ class EventController extends Controller{
                 'image'    => $event->image,
                 'type'     => 'event',
                 'event_id' => $event->id,
-                'slug'     => $data['slug'], // ← ajoute ça si news a un slug
             ]);
             return redirect()->route('events.index')->with('success', 'Événement créé !');
         } catch (\Exception $e) {
