@@ -20,7 +20,7 @@ class InscriptionMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Bienvenue sur Asso Gaming !')
+        return $this->subject('Bienvenue sur Pixel Perfect !')
                     ->view('emails.inscription');
     }
 }

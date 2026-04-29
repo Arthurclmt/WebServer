@@ -14,7 +14,7 @@
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="/">
-                <img src="{{ asset('storage/images/Logo.png') }}" alt="logo" style="width: 80px; height: 80px; object-fit: contain; margin: 0; padding: 0; vertical-align: middle;">Asso Gaming
+                <img src="{{ asset('storage/images/Logo.png') }}" alt="logo" style="width: 80px; height: 80px; object-fit: contain; margin: 0; padding: 0; vertical-align: middle;">Pixel Perfect
             </a>
             <div class="navbar-nav ms-auto">
                 @auth

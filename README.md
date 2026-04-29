@@ -1,4 +1,4 @@
-# 🎮 Asso Gaming Platform
+# 🎮 Pixel Perfect 
 
 Plateforme numérique intelligente de gestion d'une association de jeux vidéo.  
 Projet Web ING1 2025-2026 — CY Tech.
