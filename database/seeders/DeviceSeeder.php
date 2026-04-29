@@ -25,6 +25,30 @@ class DeviceSeeder extends Seeder{
             'description' => 'Switch 2 avec des jeux exclusifs tels que Mario Kart World.',
             'image'       => 'appareils/switch2.jpeg' 
         ],
+        [
+            'name'       => 'Playstation',
+            'id'        => 3,
+            'type' => 'Playstation',
+            'brand'     => 'Sony',
+            'description' => 'Playstation avec les derniers jeux, FC26, Clairs Obscurs etc...',
+            'image'       => 'appareils/Playstation.jpeg' 
+        ],
+        [
+            'name'       => 'Ventilateur',
+            'id'        => 4,
+            'type' => 'Ventilateur',
+            'brand'     => 'Epson',
+            'description' => 'Ventillateur mis à disposition',
+            'image'       => 'appareils/ventilateur.jpeg' 
+        ],
+        [
+            'name'       => 'Frigo',
+            'id'        => 5,
+            'type' => 'Frigo',
+            'brand'     => 'Sony',
+            'description' => 'Frigo rempli pour votre plus grand plaisir',
+            'image'       => 'appareils/frigo.jpeg' 
+        ],
     ];
 
     foreach ($devices as $device) {

@@ -10,9 +10,12 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-1">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">Asso Gaming</a>
+
+            <a class="navbar-brand fw-bold" href="/">
+                <img src="{{ asset('storage/images/Logo.png') }}" alt="logo" style="width: 80px; height: 80px; object-fit: contain; margin: 0; padding: 0; vertical-align: middle;">Asso Gaming
+            </a>
             <div class="navbar-nav ms-auto">
                 @auth
                     @if(auth()->user()->role === 'admin')
