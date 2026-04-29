@@ -36,7 +36,7 @@ class AuthController extends Controller
         ]);
 }
 
-        $role = $allowed ? "admin" : 'simple';
+        $role = "simple";
 
         $user = User::create([
             'pseudo'         => $request->pseudo,
@@ -46,6 +46,8 @@ class AuthController extends Controller
             'genre'          => $request->genre,
             'role'           => $role,
         ]);
+
+        \App\Models\AllowedMember::where('email', $user->email)->update(['is_registered' => true]);
         
         Mail::to($user->email)->send(new InscriptionMail($user));
 

@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\AllowedMember;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function index()
+        public function index()
     {
         $users = User::orderBy('role', 'desc')->orderBy('pseudo')->get();
-        return view('admin.index', compact('users'));
+        
+        // On ne récupère que ceux qui ne sont pas encore inscrits
+        $allowedEmails = AllowedMember::where('is_registered', false)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+
+        return view('admin.index', compact('users', 'allowedEmails'));
     }
 
     public function promote(User $user)
@@ -43,15 +50,7 @@ class AdminController extends Controller
         return back()->with('success', "{$user->pseudo} a été débanni.");
     }
   
-    public function users()
-    {
-        if (auth()->user()->role !== 'admin') {
-            abort(403);
-        }
 
-        $users = User::all();
-        return view('admin.users', ['users' => $users]);
-    }
 
     public function updateEmail(Request $request, User $user)
     {
@@ -81,5 +80,28 @@ class AdminController extends Controller
         $user->delete();
 
         return back()->with('success', "Le compte de {$user->pseudo} a été supprimé.");
+    }
+
+            public function storeAllowedEmail(Request $request)
+    {
+        $request->validate([
+            // unique:table,colonne
+            'email' => 'required|email|unique:allowed_members,email|unique:users,email',
+        ], [
+            'email.unique' => 'Cet utilisateur est déjà dans la liste ou déjà inscrit !'
+        ]);
+
+        AllowedMember::create([
+            'email' => $request->email,
+            'added_by' => auth()->id(),
+        ]);
+
+        return back()->with('success', "Email ajouté.");
+    }
+
+    public function destroyAllowedEmail(AllowedMember $allowedMember)
+    {
+        $allowedMember->delete();
+        return back()->with('success', "L'email a été retiré de la liste.");
     }
 }

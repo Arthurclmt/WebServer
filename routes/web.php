@@ -78,7 +78,6 @@ Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::middleware(['auth'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::delete('/admin/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
     Route::patch('/admin/users/{user}/email', [AdminController::class, 'updateEmail'])->name('admin.users.updateEmail');
     Route::get('/statistiques', [App\Http\Controllers\StatsController::class, 'index'])->name('stats.index');
@@ -100,6 +99,9 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(func
     Route::post('/users/{user}/demote', [AdminController::class, 'demote'])->name('admin.demote');
     Route::post('/users/{user}/ban', [AdminController::class, 'ban'])->name('admin.ban');
     Route::post('/users/{user}/unban', [AdminController::class, 'unban'])->name('admin.unban');
+
+    Route::post('/allowed-emails', [AdminController::class, 'storeAllowedEmail'])->name('admin.allowed.store');
+    Route::delete('/allowed-emails/{allowedMember}', [AdminController::class, 'destroyAllowedEmail'])->name('admin.allowed.destroy');
 });
 
 //Routes salles
