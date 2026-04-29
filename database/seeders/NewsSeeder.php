@@ -26,7 +26,7 @@ class NewsSeeder extends Seeder
         'event_id' => '2',
         ],
         [
-        'title'    => 'Braking News',
+        'title'    => 'Breaking News',
         'content'  => '',
         'image'    => 'images/Logo.png',
         ],
